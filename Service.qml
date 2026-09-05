@@ -29,8 +29,17 @@ Item {
   property int burstTicks: 0
 
   readonly property var visibleCovers: Model.applyExcludes(covers, settings.exclude)
+  // Covers that are actually allowed to be actuated: visible AND not mapped to
+  // "— ignore". visibleCovers on its own must keep including ignored covers so the
+  // Settings assignment list can still show and un-ignore them; anything that issues
+  // open/close/stop commands (bulk actions, the aggregate bar state) must use this
+  // list instead, or an "ignored" cover would be hidden from the panel yet still get
+  // actuated by openAll/closeAll/stopAll.
+  readonly property var controllableCovers: visibleCovers.filter(function(cover) {
+    return Model.floorFor(cover, settings, discovered) !== Model.IGNORED
+  })
   readonly property var sections: Model.groupByFloor(visibleCovers, settings, discovered)
-  readonly property string aggregate: Model.aggregateState(visibleCovers)
+  readonly property string aggregate: Model.aggregateState(controllableCovers)
 
   // visibleCovers is a fresh array on every poll, which would make any Repeater
   // bound to it rebuild its delegates every few seconds — destroying an open

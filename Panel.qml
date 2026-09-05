@@ -200,7 +200,9 @@ Panel {
 
   function allEntityIds() {
     var ids = []
-    var list = shutterService.visibleCovers
+    // Bulk actions must never target a cover the user marked "— ignore", even
+    // though it still counts as "visible" for the Settings assignment list.
+    var list = shutterService.controllableCovers
     for (var i = 0; i < list.length; i++) ids.push(list[i].entityId)
     return ids
   }
@@ -212,7 +214,7 @@ Panel {
     anchors.fill: parent
     bar: root.bar
     text: Model.barGlyph(shutterService.aggregate, shutterService.configured, shutterService.lastError)
-    tooltipText: Model.barTooltip(shutterService.visibleCovers, shutterService.configured, shutterService.lastError)
+    tooltipText: Model.barTooltip(shutterService.controllableCovers, shutterService.configured, shutterService.lastError)
     foreground: root.barIconColor
     onPressed: function(buttonCode) {
       if (buttonCode === Qt.RightButton) shutterService.refresh()
