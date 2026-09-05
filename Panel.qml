@@ -152,6 +152,12 @@ Panel {
   }
 
   function showList() {
+    // Leaving settings while a field is still focused (Escape, the Back
+    // button, closing the panel) must not silently drop an edit the user
+    // never pressed Enter on. Forcing focus away first — while the settings
+    // Loader is still active — lets the focused TextField's editingFinished
+    // fire and commit the value before its item gets destroyed.
+    if (view === "settings") keyCatcher.forceActiveFocus()
     view = "list"
     cursorActive = false
     clampCursor()
