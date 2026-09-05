@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "fox10.shutters",
+  "name": "Shutters",
+  "version": "1.0.0",
+  "author": "fox10",
+  "license": "MIT",
+  "description": "Home Assistant cover/shutter control grouped by floor, with up/stop/down and live position in the Omarchy bar.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Shutters",
+    "description": "Control Home Assistant covers per floor: up, stop, down, and live position percentage.",
+    "category": "Home",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {},
+    "schema": []
+  }
+}
