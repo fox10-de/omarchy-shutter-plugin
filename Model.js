@@ -248,6 +248,15 @@ function flattenRows(sections) {
   return rows
 }
 
+// Looks up the live cover object for an entity id in a covers array.
+function findCover(covers, entityId) {
+  if (!covers) return null
+  for (var i = 0; i < covers.length; i++) {
+    if (covers[i].entityId === entityId) return covers[i]
+  }
+  return null
+}
+
 function entityIdsOf(section) {
   var ids = []
   if (!section || !section.covers) return ids

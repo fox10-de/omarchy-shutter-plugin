@@ -49,6 +49,9 @@ new number overwrites it directly.
 `100` = fully open, `0` = fully closed — the same semantics as Home Assistant.
 Values above 100 are clamped to 100; invalid input is discarded.
 
+Editing one shutter's position never gets interrupted by another shutter
+moving or refreshing — each row keeps its own edit state independently.
+
 The field only appears for covers that are available **and** report the
 `SET_POSITION` feature. Open/close-only drives keep the row unchanged.
 

@@ -99,8 +99,11 @@ Panel {
   // ------------------------------------------------------ position editing
 
   function beginPositionEdit(cover) {
-    if (!cover || !cover.available || !cover.canSetPosition) return
-    positionEditEntityId = cover.entityId
+    // Rows can hand in a cover snapshotted from the stable (poll-independent)
+    // row list, so re-resolve against the live data before checking flags.
+    var live = cover ? (Model.findCover(shutterService.visibleCovers, cover.entityId) || cover) : null
+    if (!live || !live.available || !live.canSetPosition) return
+    positionEditEntityId = live.entityId
   }
 
   function cancelPositionEdit() {
@@ -481,7 +484,12 @@ Panel {
       id: coverRow
       property var row: null
       property int rowIdx: 0
-      readonly property var cover: row ? row.cover : null
+      // row.cover comes from the stable (poll-independent) section list, so it
+      // can lag behind the live position/state while a cover is moving. Resolve
+      // the live object by entityId on every poll instead of embedding it in
+      // the row model — that keeps this row's identity, and any active edit
+      // focus, untouched while still showing live data.
+      readonly property var cover: row ? (Model.findCover(shutterService.visibleCovers, row.cover.entityId) || row.cover) : null
 
       hasCursor: root.cursorActive && root.rowIndex === rowIdx
       foreground: root.foreground

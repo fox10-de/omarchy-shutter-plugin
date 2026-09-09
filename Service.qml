@@ -38,7 +38,13 @@ Item {
   readonly property var controllableCovers: visibleCovers.filter(function(cover) {
     return Model.floorFor(cover, settings, discovered) !== Model.IGNORED
   })
-  readonly property var sections: Model.groupByFloor(visibleCovers, settings, discovered)
+  // Grouped off stableCovers (not visibleCovers) so the row list itself keeps a
+  // stable identity across polls — otherwise the Repeater in Panel.qml would
+  // rebuild every row delegate on every poll tick (every 1s while any cover is
+  // moving), destroying whatever row's position editor currently has focus.
+  // Rows resolve their own live cover data by entityId (see Model.findCover),
+  // so displayed positions/spinners still update every poll.
+  readonly property var sections: Model.groupByFloor(stableCovers, settings, discovered)
   readonly property string aggregate: Model.aggregateState(controllableCovers)
 
   // visibleCovers is a fresh array on every poll, which would make any Repeater
