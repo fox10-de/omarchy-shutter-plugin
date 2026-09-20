@@ -51,6 +51,9 @@ Values above 100 are clamped to 100; invalid input is discarded.
 
 Editing one shutter's position never gets interrupted by another shutter
 moving or refreshing — each row keeps its own edit state independently.
+Clicking straight from one shutter's open input field into another row also
+works correctly: the first field's edit is cancelled and the second opens
+cleanly, even while the first shutter is still travelling.
 
 The field only appears for covers that are available **and** report the
 `SET_POSITION` feature. Open/close-only drives keep the row unchanged.

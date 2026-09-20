@@ -106,7 +106,14 @@ Panel {
     positionEditEntityId = live.entityId
   }
 
-  function cancelPositionEdit() {
+  // entityId is optional: pass it when cancelling in reaction to a specific
+  // row losing focus, so a stale row (already superseded by a newer
+  // beginPositionEdit in the same tick, e.g. clicking straight from one
+  // row's editor into another's) can't clobber the edit that replaced it.
+  // Without this guard the two rows' focus/editingPosition changes feed back
+  // into each other and Qt reports a binding loop on "editingPosition".
+  function cancelPositionEdit(entityId) {
+    if (entityId !== undefined && positionEditEntityId !== entityId) return
     positionEditEntityId = ""
     Qt.callLater(function() { keyCatcher.forceActiveFocus() })
   }
@@ -547,7 +554,7 @@ Panel {
           root.cancelPositionEdit()
           event.accepted = true
         }
-        onActiveFocusChanged: if (!activeFocus && coverRow.editingPosition) root.cancelPositionEdit()
+        onActiveFocusChanged: if (!activeFocus && coverRow.cover) root.cancelPositionEdit(coverRow.cover.entityId)
       }
 
       Row {
