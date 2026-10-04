@@ -549,7 +549,16 @@ Panel {
         inputMethodHints: Qt.ImhDigitsOnly
         validator: IntValidator { bottom: 0; top: 100 }
         placeholderText: "0-100"
-        onAccepted: if (coverRow.cover) root.commitPositionEdit(coverRow.cover.entityId, text)
+        // Consume Return/Enter ourselves: `accepted` leaves the event unhandled, so it
+        // would bubble to the (now unblocked) key catcher and fire open/stop/close.
+        Keys.onReturnPressed: function(event) {
+          if (coverRow.cover) root.commitPositionEdit(coverRow.cover.entityId, text)
+          event.accepted = true
+        }
+        Keys.onEnterPressed: function(event) {
+          if (coverRow.cover) root.commitPositionEdit(coverRow.cover.entityId, text)
+          event.accepted = true
+        }
         Keys.onEscapePressed: function(event) {
           root.cancelPositionEdit()
           event.accepted = true
